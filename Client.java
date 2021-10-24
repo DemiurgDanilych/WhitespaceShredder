@@ -8,10 +8,9 @@ import java.util.Scanner;
 public class Client {
 	public static void main(String[] args) throws IOException {
 		InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", 55555);
-		final SocketChannel socketChannel = SocketChannel. open();
-		socketChannel.connect(socketAddress);
 		
-		try(Scanner scanner = new Scanner(System.in)){
+		try(Scanner scanner = new Scanner(System.in);SocketChannel socketChannel = SocketChannel. open()){
+			socketChannel.connect(socketAddress);
 			final ByteBuffer inputBuffer = ByteBuffer.allocate(1024);
 			String msg;
 			while(true) {
@@ -24,8 +23,8 @@ public class Client {
 				System.out.println(new String(inputBuffer.array(),0,bytesCount,StandardCharsets.UTF_8).trim());
 				inputBuffer.clear();
 			}
-		}finally {
-			socketChannel.close();
+		}catch (NullPointerException ex){
+			System.out.println(ex.getMessage());
 		}
 	}
 }
